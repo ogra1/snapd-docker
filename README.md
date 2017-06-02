@@ -23,7 +23,7 @@ $ ./build.sh
 
 ### Installing a snap package:
 
-This will install the htop snap and will show the running processes inside the container after connecting the right snap interfaces (note that you need to use the full path in /snap/bin to execute the snap).
+This will install the htop snap and will show the running processes inside the container after connecting the right snap interfaces (note that you need to use the full path in /snap/bin or "snap run <cmd>" to execute the snap).
 
 ```
 $ sudo docker exec -it snappy snap install htop
@@ -35,6 +35,7 @@ $ sudo docker exec -it snappy /snap/bin/htop
 
 ### Building snaps using the snapcraft snap package (using the default "snappy" name):
 
+Install some required debs, install the snapcraft snap package to build snap packages, pull some remote branch and build a snap from using the /snap/bin/snapcraft command.
 ```
 $ sudo docker exec -it snappy sh -c 'apt -y install git sudo'
 $ sudo docker exec -it snappy snap install snapcraft --edge --classic
@@ -50,6 +51,8 @@ $
 ```
 
 ### Building an UbuntuCore image for a RaspberryPi3:
+
+Install some debs required to work around a bug in the ubuntu-image classic snap, install ubuntu-image, retrieve the model assertion for a pi3 image using the "snap known" command and build the image using ubuntu-image.
 ```
 $ sudo docker exec -it snappy sh -c 'apt -y install libparted dosfstools' # work around bug 1694982
 Reading package lists... Done
