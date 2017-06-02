@@ -51,7 +51,7 @@ $
 
 Building an UbuntuCore image for a RaspberryPi2:
 ```
-$ sudo docker exec -it snapdtest sh -c 'apt -y install libparted dosfstools' # work around bug 1694982
+$ sudo docker exec -it snappy sh -c 'apt -y install libparted dosfstools' # work around bug 1694982
 Reading package lists... Done
 Building dependency tree
 Reading state information... Done
