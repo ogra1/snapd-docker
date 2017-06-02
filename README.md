@@ -48,3 +48,23 @@ Snapping 'bbb' |
 Snapped bbb_16-0.1_armhf.snap
 $
 ```
+
+Building an UbuntuCore image for a RaspberryPi2:
+```
+$ sudo docker exec -it snapdtest sh -c 'apt -y install libparted dosfstools' # work around bug 1694982
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+...
+Setting up libparted2:amd64 (3.2-17) ...
+Setting up dosfstools (4.0-2ubuntu1) ...
+Processing triggers for libc-bin (2.24-9ubuntu2) ...
+$ sudo docker exec -it snappy snap install ubuntu-image --classic --edge
+$ sudo docker exec -it snappy sh -c 'snap known --remote model series=16 model=pi3 brand-id=canonical >pi3.model'
+$ sudo docker exec -it snappy snap run ubuntu-image pi3.model
+Fetching core
+Fetching pi2-kernel
+Fetching pi3
+$ sudo docker exec -it snappy sh -c 'ls *.img'
+pi3.img
+```
