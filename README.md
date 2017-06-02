@@ -21,6 +21,16 @@ $ sudo apt install docker.io
 $ ./build.sh
 ```
 
+If you want to create subsequent other containers using the same image, use the --containername option with a subsequent run of the ./build.sh script.
+
+```
+$ ./build.sh -c second
+$ sudo docker exec -it second snap list
+Name  Version    Rev   Developer  Notes
+core  16-2.26.4  2092  canonical  -
+$
+```
+
 ### Installing and running a snap package:
 
 This will install the htop snap and will show the running processes inside the container after connecting the right snap interfaces (note that you need to use the full path in /snap/bin or "snap run $cmd" to execute the snap).
