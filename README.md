@@ -49,7 +49,7 @@ Snapped bbb_16-0.1_armhf.snap
 $
 ```
 
-Building an UbuntuCore image for a RaspberryPi2:
+Building an UbuntuCore image for a RaspberryPi3:
 ```
 $ sudo docker exec -it snappy sh -c 'apt -y install libparted dosfstools' # work around bug 1694982
 Reading package lists... Done
