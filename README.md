@@ -14,7 +14,7 @@ usage: build.sh [options]
 
 ## Examples
 
-Creating a container with defaults (image: snapd, continer name: snappy):
+Creating a container with defaults (image: snapd, container name: snappy):
 
 ```
 $ sudo apt install docker.io
@@ -33,7 +33,7 @@ $ sudo docker exec -it snappy snap connect htop:system-observe
 $ sudo docker exec -it snappy /snap/bin/htop
 ```
 
-Building snaps using the snapcraft snap package (using teh default "snappy" name):
+Building snaps using the snapcraft snap package (using the default "snappy" name):
 
 ```
 $ sudo docker exec -it snappy sh -c 'apt -y install git sudo'
