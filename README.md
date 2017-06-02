@@ -21,7 +21,7 @@ $ sudo apt install docker.io
 $ ./build.sh
 ```
 
-Installing a snap package:
+### Installing a snap package:
 
 This will install the htop snap and will show the running processes inside the container after connecting the right snap interfaces (note that you need to use the full path in /snap/bin to execute the snap).
 
@@ -33,7 +33,7 @@ $ sudo docker exec -it snappy snap connect htop:system-observe
 $ sudo docker exec -it snappy /snap/bin/htop
 ```
 
-Building snaps using the snapcraft snap package (using the default "snappy" name):
+### Building snaps using the snapcraft snap package (using the default "snappy" name):
 
 ```
 $ sudo docker exec -it snappy sh -c 'apt -y install git sudo'
@@ -49,7 +49,7 @@ Snapped bbb_16-0.1_armhf.snap
 $
 ```
 
-Building an UbuntuCore image for a RaspberryPi3:
+### Building an UbuntuCore image for a RaspberryPi3:
 ```
 $ sudo docker exec -it snappy sh -c 'apt -y install libparted dosfstools' # work around bug 1694982
 Reading package lists... Done
