@@ -21,7 +21,7 @@ $ sudo apt install docker.io
 $ ./build.sh
 ```
 
-### Installing a snap package:
+### Installing and running a snap package:
 
 This will install the htop snap and will show the running processes inside the container after connecting the right snap interfaces (note that you need to use the full path in /snap/bin or "snap run <cmd>" to execute the snap).
 
