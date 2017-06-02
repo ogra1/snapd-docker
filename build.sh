@@ -7,7 +7,7 @@ set -e
 
 CONTNAME=snappy
 IMGNAME=snapd
-RELEASE=16.04
+RELEASE=17.04
 
 # parse options
 
