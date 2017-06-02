@@ -40,7 +40,7 @@ $ sudo docker exec snappy snap install htop
 htop 2.0.2 from 'maxiberta' installed
 $ sudo docker exec snappy snap connect htop:process-control
 $ sudo docker exec snappy snap connect htop:system-observe
-$ sudo docker exec snappy /snap/bin/htop
+$ sudo docker exec -ti snappy /snap/bin/htop
 ```
 
 ### Building snaps using the snapcraft snap package (using the default "snappy" name):
