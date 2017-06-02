@@ -23,7 +23,7 @@ $ ./build.sh
 
 Installing a snap package:
 
-This will install the htop snap and will show the running processes inside the container after connecting the right snap interfaces.
+This will install the htop snap and will show the running processes inside the container after connecting the right snap interfaces (note that you need to use the full path in /snap/bin to execute the snap).
 
 ```
 $ sudo docker exec -it snappy snap install htop
