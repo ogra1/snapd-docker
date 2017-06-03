@@ -9,7 +9,10 @@ CONTNAME=snappy
 IMGNAME=snapd
 RELEASE=17.04
 
-# parse options
+SUDO=""
+if ! $(id -Gn|grep -q docker); then
+	SUDO="sudo"
+fi
 
 usage() {
 	echo "usage: $(basename $0) [options]"
@@ -21,10 +24,10 @@ usage() {
 
 print_info() {
 	echo
-    echo "use: sudo docker exec -it $CONTNAME <command> ... to run a command inside this container"
+    echo "use: $SUDO docker exec -it $CONTNAME <command> ... to run a command inside this container"
     echo
-    echo "to remove the container use: sudo docker rm -f $CONTNAME"
-    echo "to remove the related image use: sudo docker rmi $IMGNAME"
+    echo "to remove the container use: $SUDO docker rm -f $CONTNAME"
+    echo "to remove the related image use: $SUDO docker rmi $IMGNAME"
 }
 
 while [ $# -gt 0 ]; do
@@ -45,13 +48,13 @@ while [ $# -gt 0 ]; do
        shift
 done
 
-if [ -n "$(sudo docker ps -f name=$CONTNAME -q)" ]; then
+if [ -n "$($SUDO docker ps -f name=$CONTNAME -q)" ]; then
 	echo "Container $CONTNAME already running!"
 	print_info
 	exit 0
 fi
 
-if [ -z "$(sudo docker images|grep $IMGNAME)" ]; then
+if [ -z "$($SUDO docker images|grep $IMGNAME)" ]; then
 	BUILDDIR=$(mktemp -d)
     cat << EOF > $BUILDDIR/Dockerfile
 FROM ubuntu:$RELEASE
@@ -65,12 +68,12 @@ VOLUME [ “/sys/fs/cgroup” ]
 STOPSIGNAL SIGRTMIN+3
 CMD [ "/sbin/init" ]
 EOF
-    sudo docker build -t $IMGNAME $BUILDDIR
+    $SUDO docker build -t $IMGNAME $BUILDDIR
 	rm -rf $BUILDDIR
 fi
 
 # start the detached container
-sudo docker run \
+$SUDO docker run \
 	--name=$CONTNAME \
 	-ti \
 	--tmpfs /run \
@@ -87,7 +90,7 @@ sudo docker run \
 TIMEOUT=20
 SLEEP=3
 echo -n "Waiting $(($TIMEOUT*3)) seconds for snapd startup"
-while [ -z "$(sudo docker exec -it $CONTNAME pgrep snapd)" ]; do
+while [ -z "$($SUDO docker exec -it $CONTNAME pgrep snapd)" ]; do
 	echo -n "."
 	sleep $SLEEP
 	if [ "$TIMEOUT" -le "0" ]; then
@@ -97,7 +100,7 @@ while [ -z "$(sudo docker exec -it $CONTNAME pgrep snapd)" ]; do
 	TIMEOUT=$(($TIMEOUT-1))
 done
 
-sudo docker exec -it $CONTNAME snap install core --edge
+$SUDO docker exec -it $CONTNAME snap install core --edge
 echo "container $CONTNAME started ..."
 
 print_info
