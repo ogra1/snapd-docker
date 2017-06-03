@@ -45,7 +45,7 @@ $ sudo docker exec -ti snappy htop
 
 ### Building snaps using the snapcraft snap package (using the default "snappy" name):
 
-Install some required debs, install the snapcraft snap package to build snap packages, pull some remote branch and build a snap from using the /snap/bin/snapcraft command.
+Install some required debs, install the snapcraft snap package to build snap packages, pull some remote branch and build a snap from using the snapcraft command.
 ```
 $ sudo docker exec snappy sh -c 'apt -y install git'
 $ sudo docker exec snappy snap install snapcraft --edge --classic
