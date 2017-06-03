@@ -33,7 +33,6 @@ print_info() {
 }
 
 clean_up() {
-    echo "cleaning up"
     sleep 1
     $SUDO docker rm -f $CONTNAME >/dev/null 2>&1 || true
     $SUDO docker rmi $IMGNAME >/dev/null 2>&1 || true
