@@ -50,7 +50,7 @@ Install some required debs, install the snapcraft snap package to build snap pac
 $ sudo docker exec snappy sh -c 'apt -y install git'
 $ sudo docker exec snappy snap install snapcraft --edge --classic
 $ sudo docker exec snappy sh -c 'git clone https://github.com/ogra1/beaglebone-gadget'
-$ sudo docker exec snappy sh -c 'cd beaglebone-gadget; cp crossbuild-snapcraft.yaml snapcraft.yaml; TMPDIR=. snapcraft'
+$ sudo docker exec snappy sh -c 'cd beaglebone-gadget; cp cross* snapcraft.yaml; TMPDIR=. snapcraft'
 ...
 ./scripts/config_whitelist.txt . 1>&2
 Staging uboot
