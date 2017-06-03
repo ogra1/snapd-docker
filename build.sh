@@ -14,6 +14,8 @@ if ! $(id -Gn|grep -q docker); then
 	SUDO="sudo"
 fi
 
+BUILDDIR=$(mktemp -d)
+
 usage() {
 	echo "usage: $(basename $0) [options]"
 	echo
@@ -29,6 +31,18 @@ print_info() {
     echo "to remove the container use: $SUDO docker rm -f $CONTNAME"
     echo "to remove the related image use: $SUDO docker rmi $IMGNAME"
 }
+
+clean_up() {
+    echo "cleaning up"
+    sleep 1
+    $SUDO docker rm -f $CONTNAME >/dev/null 2>&1 || true
+    $SUDO docker rmi $IMGNAME >/dev/null 2>&1 || true
+    $SUDO docker rmi $($SUDO docker images -f "dangling=true" -q) >/dev/null 2>&1 || true
+    rm -rf $BUILDDIR
+    exit 0
+}
+
+trap clean_up INT KILL TERM
 
 while [ $# -gt 0 ]; do
        case "$1" in
@@ -55,7 +69,6 @@ if [ -n "$($SUDO docker ps -f name=$CONTNAME -q)" ]; then
 fi
 
 if [ -z "$($SUDO docker images|grep $IMGNAME)" ]; then
-	BUILDDIR=$(mktemp -d)
     cat << EOF > $BUILDDIR/Dockerfile
 FROM ubuntu:$RELEASE
 ENV container docker
@@ -74,8 +87,7 @@ VOLUME [ “/sys/fs/cgroup” ]
 STOPSIGNAL SIGRTMIN+3
 CMD [ "/sbin/init" ]
 EOF
-    $SUDO docker build -t $IMGNAME $BUILDDIR
-	rm -rf $BUILDDIR
+    $SUDO docker build -t $IMGNAME --force-rm=true --rm=true $BUILDDIR || exit
 fi
 
 # start the detached container
@@ -98,7 +110,7 @@ SLEEP=3
 echo -n "Waiting $(($TIMEOUT*3)) seconds for snapd startup"
 while [ -z "$($SUDO docker exec $CONTNAME pgrep snapd)" ]; do
 	echo -n "."
-	sleep $SLEEP
+	sleep $SLEEP || exit
 	if [ "$TIMEOUT" -le "0" ]; then
 		echo " Timed out!"
 		exit 0
@@ -106,7 +118,7 @@ while [ -z "$($SUDO docker exec $CONTNAME pgrep snapd)" ]; do
 	TIMEOUT=$(($TIMEOUT-1))
 done
 
-$SUDO docker exec $CONTNAME snap install core --edge
+$SUDO docker exec $CONTNAME snap install core --edge || exit
 echo "container $CONTNAME started ..."
 
 print_info
