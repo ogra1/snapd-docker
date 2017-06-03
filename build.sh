@@ -11,21 +11,21 @@ RELEASE=17.04
 
 SUDO=""
 if ! $(id -Gn|grep -q docker); then
-	SUDO="sudo"
+    SUDO="sudo"
 fi
 
 BUILDDIR=$(mktemp -d)
 
 usage() {
-	echo "usage: $(basename $0) [options]"
-	echo
-	echo "  -c|--containername <name> (default: snappy)"
-	echo "  -i|--imagename <name> (default: snapd)"
+    echo "usage: $(basename $0) [options]"
+    echo
+    echo "  -c|--containername <name> (default: snappy)"
+    echo "  -i|--imagename <name> (default: snapd)"
     exit 0
 }
 
 print_info() {
-	echo
+    echo
     echo "use: $SUDO docker exec -it $CONTNAME <command> ... to run a command inside this container"
     echo
     echo "to remove the container use: $SUDO docker rm -f $CONTNAME"
@@ -62,9 +62,9 @@ while [ $# -gt 0 ]; do
 done
 
 if [ -n "$($SUDO docker ps -f name=$CONTNAME -q)" ]; then
-	echo "Container $CONTNAME already running!"
-	print_info
-	exit 0
+    echo "Container $CONTNAME already running!"
+    print_info
+    exit 0
 fi
 
 if [ -z "$($SUDO docker images|grep $IMGNAME)" ]; then
@@ -91,30 +91,30 @@ fi
 
 # start the detached container
 $SUDO docker run \
-	--name=$CONTNAME \
-	-ti \
-	--tmpfs /run \
-	--tmpfs /run/lock \
-	--tmpfs /tmp \
-	--cap-add SYS_ADMIN \
-	--device=/dev/fuse \
-	--security-opt apparmor:unconfined \
-	--security-opt seccomp:unconfined \
-	-v /sys/fs/cgroup:/sys/fs/cgroup:ro \
-	-d $IMGNAME
+    --name=$CONTNAME \
+    -ti \
+    --tmpfs /run \
+    --tmpfs /run/lock \
+    --tmpfs /tmp \
+    --cap-add SYS_ADMIN \
+    --device=/dev/fuse \
+    --security-opt apparmor:unconfined \
+    --security-opt seccomp:unconfined \
+    -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+    -d $IMGNAME
 
 # wait for snapd to start
 TIMEOUT=20
 SLEEP=3
 echo -n "Waiting $(($TIMEOUT*3)) seconds for snapd startup"
 while [ -z "$($SUDO docker exec $CONTNAME pgrep snapd)" ]; do
-	echo -n "."
-	sleep $SLEEP || exit
-	if [ "$TIMEOUT" -le "0" ]; then
-		echo " Timed out!"
-		exit 0
-	fi
-	TIMEOUT=$(($TIMEOUT-1))
+    echo -n "."
+    sleep $SLEEP || exit
+    if [ "$TIMEOUT" -le "0" ]; then
+        echo " Timed out!"
+        exit 0
+    fi
+    TIMEOUT=$(($TIMEOUT-1))
 done
 
 $SUDO docker exec $CONTNAME snap install core --edge || exit
