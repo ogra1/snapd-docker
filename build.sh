@@ -90,7 +90,7 @@ $SUDO docker run \
 TIMEOUT=20
 SLEEP=3
 echo -n "Waiting $(($TIMEOUT*3)) seconds for snapd startup"
-while [ -z "$($SUDO docker exec -it $CONTNAME pgrep snapd)" ]; do
+while [ -z "$($SUDO docker exec $CONTNAME pgrep snapd)" ]; do
 	echo -n "."
 	sleep $SLEEP
 	if [ "$TIMEOUT" -le "0" ]; then
@@ -100,7 +100,7 @@ while [ -z "$($SUDO docker exec -it $CONTNAME pgrep snapd)" ]; do
 	TIMEOUT=$(($TIMEOUT-1))
 done
 
-$SUDO docker exec -it $CONTNAME snap install core --edge
+$SUDO docker exec $CONTNAME snap install core --edge
 echo "container $CONTNAME started ..."
 
 print_info
