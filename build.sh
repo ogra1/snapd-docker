@@ -120,4 +120,5 @@ done
 $SUDO docker exec $CONTNAME snap install core --edge || exit
 echo "container $CONTNAME started ..."
 
+rm -rf $BUILDDIR >/dev/null 2>&1
 print_info
