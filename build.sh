@@ -12,7 +12,7 @@ IMGNAME=snapd
 RELEASE=17.04
 
 SUDO=""
-if ! $(id -Gn|grep -q docker); then
+if [ -z "$(id -Gn|grep -q docker)" ] && [ "$(id -u)" != "0" ]; then
     SUDO="sudo"
 fi
 
