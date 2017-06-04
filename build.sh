@@ -128,5 +128,3 @@ echo "container $CONTNAME started ..."
 
 rm -rf $BUILDDIR >/dev/null 2>&1
 print_info
-
-clean_up
