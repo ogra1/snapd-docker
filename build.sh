@@ -27,7 +27,7 @@ usage() {
     echo
     echo "  -c|--containername <name> (default: snappy)"
     echo "  -i|--imagename <name> (default: snapd)"
-    exit 0
+    clean_up
 }
 
 print_info() {
@@ -43,11 +43,11 @@ clean_up() {
     $SUDO docker rm -f $CONTNAME >/dev/null 2>&1 || true
     $SUDO docker rmi $IMGNAME >/dev/null 2>&1 || true
     $SUDO docker rmi $($SUDO docker images -f "dangling=true" -q) >/dev/null 2>&1 || true
-    rm -rf $BUILDDIR
+    rm -rf $BUILDDIR || true
     exit 0
 }
 
-trap clean_up INT KILL TERM
+trap clean_up 1 2 3 4 9 15
 
 while [ $# -gt 0 ]; do
        case "$1" in
@@ -61,7 +61,7 @@ while [ $# -gt 0 ]; do
                        usage
                        ;;
                *)
-                       ERROR="$1 is unknown" exit 1
+                       usage
                        ;;
        esac
        shift
@@ -70,7 +70,7 @@ done
 if [ -n "$($SUDO docker ps -f name=$CONTNAME -q)" ]; then
     echo "Container $CONTNAME already running!"
     print_info
-    exit 0
+    clean_up
 fi
 
 if [ -z "$($SUDO docker images|grep $IMGNAME)" ]; then
@@ -92,7 +92,7 @@ VOLUME [ “/sys/fs/cgroup” ]
 STOPSIGNAL SIGRTMIN+3
 CMD [ "/sbin/init" ]
 EOF
-    $SUDO docker build -t $IMGNAME --force-rm=true --rm=true $BUILDDIR || exit
+    $SUDO docker build -t $IMGNAME --force-rm=true --rm=true $BUILDDIR || clean_up
 fi
 
 # start the detached container
@@ -107,7 +107,7 @@ $SUDO docker run \
     --security-opt apparmor:unconfined \
     --security-opt seccomp:unconfined \
     -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
-    -d $IMGNAME
+    -d $IMGNAME || clean_up
 
 # wait for snapd to start
 TIMEOUT=20
@@ -115,16 +115,18 @@ SLEEP=3
 echo -n "Waiting $(($TIMEOUT*3)) seconds for snapd startup"
 while [ -z "$($SUDO docker exec $CONTNAME pgrep snapd)" ]; do
     echo -n "."
-    sleep $SLEEP || exit
+    sleep $SLEEP || clean_up
     if [ "$TIMEOUT" -le "0" ]; then
         echo " Timed out!"
-        exit 0
+        clean_up
     fi
     TIMEOUT=$(($TIMEOUT-1))
 done
 
-$SUDO docker exec $CONTNAME snap install core --edge || exit
+$SUDO docker exec $CONTNAME snap install core --edge || clean_up
 echo "container $CONTNAME started ..."
 
 rm -rf $BUILDDIR >/dev/null 2>&1
 print_info
+
+clean_up
