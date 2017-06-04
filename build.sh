@@ -1,6 +1,8 @@
 #! /bin/sh
 #
-# make sure to have the docker.io deb installed before running this script!
+# make sure to have docker installed before running this script!
+# (tested with the docker.io deb and the docker snap package under
+# ubuntu 16.04)
 #
 
 set -e
@@ -15,10 +17,10 @@ if ! $(id -Gn|grep -q docker); then
 fi
 
 if [ "$(which docker)" = "/snap/bin/docker" ]; then
-    BUILDDIR=$(mktemp -d -p "$(readlink -f ~/snap/docker/current)")
-else
-    BUILDDIR=$(mktemp -d)
+    export TMPDIR="$(readlink -f ~/snap/docker/current)"
 fi
+
+BUILDDIR=$(mktemp -d)
 
 usage() {
     echo "usage: $(basename $0) [options]"
