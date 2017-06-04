@@ -14,7 +14,11 @@ if ! $(id -Gn|grep -q docker); then
     SUDO="sudo"
 fi
 
-BUILDDIR=$(mktemp -d)
+if [ "$(which docker)" = "/snap/bin/docker" ]; then
+    BUILDDIR=$(mktemp -d -p "$(readlink -f ~/snap/docker/current)")
+else
+    BUILDDIR=$(mktemp -d)
+fi
 
 usage() {
     echo "usage: $(basename $0) [options]"
