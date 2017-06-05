@@ -27,7 +27,7 @@ usage() {
     echo
     echo "  -c|--containername <name> (default: snappy)"
     echo "  -i|--imagename <name> (default: snapd)"
-    clean_up
+    rm_builddir
 }
 
 print_info() {
@@ -43,6 +43,10 @@ clean_up() {
     $SUDO docker rm -f $CONTNAME >/dev/null 2>&1 || true
     $SUDO docker rmi $IMGNAME >/dev/null 2>&1 || true
     $SUDO docker rmi $($SUDO docker images -f "dangling=true" -q) >/dev/null 2>&1 || true
+    rm_builddir
+}
+
+rm_builddir() {
     rm -rf $BUILDDIR || true
     exit 0
 }
@@ -70,7 +74,7 @@ done
 if [ -n "$($SUDO docker ps -f name=$CONTNAME -q)" ]; then
     echo "Container $CONTNAME already running!"
     print_info
-    clean_up
+    rm_builddir
 fi
 
 if [ -z "$($SUDO docker images|grep $IMGNAME)" ]; then
@@ -126,5 +130,5 @@ done
 $SUDO docker exec $CONTNAME snap install core --edge || clean_up
 echo "container $CONTNAME started ..."
 
-rm -rf $BUILDDIR >/dev/null 2>&1
 print_info
+rm_builddir
