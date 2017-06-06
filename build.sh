@@ -92,9 +92,9 @@ RUN apt-get update &&\
  ln -s /bin/true /sbin/udevadm &&\
  mkdir -p /lib/modules
 RUN systemctl enable snapd
-VOLUME [ “/sys/fs/cgroup” ]
+VOLUME ["/sys/fs/cgroup"]
 STOPSIGNAL SIGRTMIN+3
-CMD [ "/sbin/init" ]
+CMD ["/sbin/init"]
 EOF
     $SUDO docker build -t $IMGNAME --force-rm=true --rm=true $BUILDDIR || clean_up
 fi
