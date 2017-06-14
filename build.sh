@@ -90,7 +90,6 @@ RUN apt-get update &&\
  apt-get clean &&\
  dpkg-divert --local --rename --add /sbin/udevadm &&\
  ln -s /bin/true /sbin/udevadm &&\
- mkdir -p /lib/modules
 RUN systemctl enable snapd
 VOLUME ["/sys/fs/cgroup"]
 STOPSIGNAL SIGRTMIN+3
@@ -111,6 +110,7 @@ $SUDO docker run \
     --security-opt apparmor:unconfined \
     --security-opt seccomp:unconfined \
     -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+    -v /lib/modules:/lib/modules:ro \
     -d $IMGNAME || clean_up
 
 # wait for snapd to start
