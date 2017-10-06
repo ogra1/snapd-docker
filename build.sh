@@ -18,6 +18,8 @@ fi
 
 if [ "$(which docker)" = "/snap/bin/docker" ]; then
     export TMPDIR="$(readlink -f ~/snap/docker/current)"
+	# we need to run the snap once to have $SNAP_USER_DATA created
+	/snap/bin/docker >/dev/null 2>&1
 fi
 
 BUILDDIR=$(mktemp -d)
@@ -89,7 +91,7 @@ RUN apt-get update &&\
  apt-get install -y fuse snapd snap-confine squashfuse sudo &&\
  apt-get clean &&\
  dpkg-divert --local --rename --add /sbin/udevadm &&\
- ln -s /bin/true /sbin/udevadm &&\
+ ln -s /bin/true /sbin/udevadm
 RUN systemctl enable snapd
 VOLUME ["/sys/fs/cgroup"]
 STOPSIGNAL SIGRTMIN+3
