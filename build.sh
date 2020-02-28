@@ -9,7 +9,7 @@ set -e
 
 CONTNAME=snappy
 IMGNAME=snapd
-RELEASE=16.04
+RELEASE=18.04
 
 SUDO=""
 if [ -z "$(id -Gn|grep docker)" ] && [ "$(id -u)" != "0" ]; then
