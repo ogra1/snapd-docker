@@ -116,9 +116,9 @@ $SUDO docker run \
     -d $IMGNAME || clean_up
 
 # wait for snapd to start
-TIMEOUT=20
-SLEEP=3
-echo -n "Waiting $(($TIMEOUT*3)) seconds for snapd startup"
+TIMEOUT=100
+SLEEP=0.1
+echo -n "Waiting up to $(($TIMEOUT/10)) seconds for snapd startup"
 while [ -z "$($SUDO docker exec $CONTNAME systemctl status snapd.seeded | grep 'Active: active')" ]; do
     echo -n "."
     sleep $SLEEP || clean_up
